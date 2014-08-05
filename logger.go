@@ -2,7 +2,7 @@ package log
 
 /**
  * Logger struct
- *  prints to console and returns LogMessage
+ *  prints to console and returns Record
  *
  * Author: Casey Delow <cdelorme@gmail.com>
  * Date: 2014-8-5
@@ -18,16 +18,16 @@ type Logger struct {
 	NoColor bool
 }
 
-func (logger *Logger) log(logMessage *LogMessage, color Color) {
+func (logger *Logger) log(record *Record, color Color) {
 
-	if !logger.Silent && logMessage.Level >= logger.Level {
-		parsedMessage := logMessage.Message
+	if !logger.Silent && record.Level >= logger.Level {
+		parsedMessage := record.Message
 
-		if len(logMessage.Args) > 0 {
-			parsedMessage = fmt.Sprintf(logMessage.Message, &logMessage.Args)
+		if len(record.Args) > 0 {
+			parsedMessage = fmt.Sprintf(record.Message, &record.Args)
 		}
 
-		parsedMessage = fmt.Sprintf("[%s] %s:%d, %s", logMessage.Date, logMessage.File, logMessage.LineNumber, parsedMessage)
+		parsedMessage = fmt.Sprintf("[%s] %s:%d, %s", record.Date, record.File, record.LineNumber, parsedMessage)
 
 		if !logger.NoColor {
 			parsedMessage = fmt.Sprintf("%s[%dm%s%s[%dm", ESCAPE, color, parsedMessage, ESCAPE, RESET)
@@ -37,74 +37,74 @@ func (logger *Logger) log(logMessage *LogMessage, color Color) {
 	}
 }
 
-func (logger *Logger) Emergency(message string, args ...interface{}) *LogMessage {
-	logMessage := LogMessage{}
-	logMessage.Build(message, 1, EMERGENCY, args...)
+func (logger *Logger) Emergency(message string, args ...interface{}) *Record {
+	record := Record{}
+	record.Build(message, 1, EMERGENCY, args...)
 
-	logger.log(&logMessage, RED)
+	logger.log(&record, RED)
 
-	return &logMessage
+	return &record
 }
 
-func (logger *Logger) Alert(message string, args ...interface{}) *LogMessage {
-	logMessage := LogMessage{}
-	logMessage.Build(message, 1, ALERT, args...)
+func (logger *Logger) Alert(message string, args ...interface{}) *Record {
+	record := Record{}
+	record.Build(message, 1, ALERT, args...)
 
-	logger.log(&logMessage, RED)
+	logger.log(&record, RED)
 
-	return &logMessage
+	return &record
 }
 
-func (logger *Logger) Critical(message string, args ...interface{}) *LogMessage {
-	logMessage := LogMessage{}
-	logMessage.Build(message, 1, CRITICAL, args...)
+func (logger *Logger) Critical(message string, args ...interface{}) *Record {
+	record := Record{}
+	record.Build(message, 1, CRITICAL, args...)
 
-	logger.log(&logMessage, MAGENTA)
+	logger.log(&record, MAGENTA)
 
-	return &logMessage
+	return &record
 }
 
-func (logger *Logger) Error(message string, args ...interface{}) *LogMessage {
-	logMessage := LogMessage{}
-	logMessage.Build(message, 1, ERROR, args...)
+func (logger *Logger) Error(message string, args ...interface{}) *Record {
+	record := Record{}
+	record.Build(message, 1, ERROR, args...)
 
-	logger.log(&logMessage, MAGENTA)
+	logger.log(&record, MAGENTA)
 
-	return &logMessage
+	return &record
 }
 
-func (logger *Logger) Notice(message string, args ...interface{}) *LogMessage {
-	logMessage := LogMessage{}
-	logMessage.Build(message, 1, NOTICE, args...)
+func (logger *Logger) Notice(message string, args ...interface{}) *Record {
+	record := Record{}
+	record.Build(message, 1, NOTICE, args...)
 
-	logger.log(&logMessage, YELLOW)
+	logger.log(&record, YELLOW)
 
-	return &logMessage
+	return &record
 }
 
-func (logger *Logger) Warning(message string, args ...interface{}) *LogMessage {
-	logMessage := LogMessage{}
-	logMessage.Build(message, 1, WARNING, args...)
+func (logger *Logger) Warning(message string, args ...interface{}) *Record {
+	record := Record{}
+	record.Build(message, 1, WARNING, args...)
 
-	logger.log(&logMessage, YELLOW)
+	logger.log(&record, YELLOW)
 
-	return &logMessage
+	return &record
 }
 
-func (logger *Logger) Info(message string, args ...interface{}) *LogMessage {
-	logMessage := LogMessage{}
-	logMessage.Build(message, 1, INFO, args...)
+func (logger *Logger) Info(message string, args ...interface{}) *Record {
+	record := Record{}
+	record.Build(message, 1, INFO, args...)
 
-	logger.log(&logMessage, RESET)
+	logger.log(&record, RESET)
 
-	return &logMessage
+	return &record
 }
 
-func (logger *Logger) Debug(message string, args ...interface{}) *LogMessage {
-	logMessage := LogMessage{}
-	logMessage.Build(message, 1, DEBUG, args...)
+func (logger *Logger) Debug(message string, args ...interface{}) *Record {
+	record := Record{}
+	record.Build(message, 1, DEBUG, args...)
 
-	logger.log(&logMessage, BLUE)
+	logger.log(&record, BLUE)
 
-	return &logMessage
+	return &record
 }
