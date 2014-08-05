@@ -21,7 +21,7 @@ type Record struct {
 	Args       []interface{}
 }
 
-func (record *Record) Build(message string, skip int, level LogLevel, args ...*interface{}) {
+func (record *Record) Build(message string, skip int, level LogLevel, args ...interface{}) {
 	_, file, line, ok := runtime.Caller(skip + 1)
 	if !ok {
 		file = "???"
