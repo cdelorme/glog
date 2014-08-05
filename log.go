@@ -45,17 +45,3 @@ var LevelNames = []string{
 	"Info",
 	"Debug",
 }
-
-func GetLogger(logTo string, logFile string, mongoDatabase string, mongoUsername string, mongoPassword string) Logger {
-	var logger Logger
-
-	if logTo == "file" && logFile != "" {
-		logger = &FileLogger{File: logFile}
-	} else if logTo == "mongo" && mongoDatabase != "" {
-		logger = &MongoLogger{Database: mongoDatabase, Username: mongoUsername, Password: mongoPassword}
-	} else {
-		logger = &StandardLogger{}
-	}
-
-	return logger
-}
