@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-type LogMessage struct {
+type Record struct {
 	Message    string
 	Date       string
 	File       string
@@ -21,17 +21,17 @@ type LogMessage struct {
 	Args       []interface{}
 }
 
-func (logMessage *LogMessage) Build(message string, skip int, level LogLevel, args ...interface{}) {
+func (record *Record) Build(message string, skip int, level LogLevel, args ...*interface{}) {
 	_, file, line, ok := runtime.Caller(skip + 1)
 	if !ok {
 		file = "???"
 		line = 0
 	}
 
-	logMessage.Message = message
-	logMessage.Date = time.Now().Format(time.Stamp)
-	logMessage.File = file
-	logMessage.LineNumber = line
-	logMessage.Level = level
-	logMessage.Args = args
+	record.Message = message
+	record.Date = time.Now().Format(time.Stamp)
+	record.File = file
+	record.LineNumber = line
+	record.Level = level
+	record.Args = args
 }
