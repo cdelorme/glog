@@ -4,7 +4,7 @@ package log
  * LogMessage container for storage and transmission
  *
  * Author: Casey Delow <cdelorme@gmail.com>
- * Date: 2014-7-20
+ * Date: 2014-8-5
  */
 
 import (
