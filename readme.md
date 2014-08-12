@@ -33,17 +33,17 @@ It does not:
 For size comparison, I compiled three simple main packages in golang 1.3, each using a logging tool with a single line of output.  The respective binary sizes were:
 
 - 2.8M go-logging
-- 1.8M go-logger
+- 1.8M go-log
 - 1.7M golang log
 
-So the **golang log** package wins in smallest size, but not utility, while _my go-logger_ package shaved off over a megabyte of executable size by not including multiple abstraction layers and test files.
+So the **golang log** package wins in smallest size, but not utility, while my `go-log` package shaved off over a megabyte of executable size by not including multiple abstraction layers and test files.
 
 
 ## usage
 
 Using my library is simple:
 
-    import "github.com/cdelorme/go-logger"
+    import "github.com/cdelorme/go-log"
 
 The package name is `log`, and you can get a new logger and begin using it with:
 
