@@ -30,14 +30,13 @@ It does not:
 - have wildly extensible abstraction layers or a myriad of extra features
 - include test files which increase the binary size (and golang binaries are far from "tiny")
 
-
-For size comparison, I build a simple main package with one line of log output including each library, and the respective sizes of the executables with the golang 1.3 compiler were:
+For size comparison, I compiled three simple main packages in golang 1.3, each using a logging tool with a single line of output.  The respective binary sizes were:
 
 - 2.8M go-logging
 - 1.8M go-logger
 - 1.7M golang log
 
-So the **golang log** package wins in smallest size, but not utility, while _my go-logger_ package shaved off over a megabyte of executable size by not having the test files, additional classes, and abstraction layers.
+So the **golang log** package wins in smallest size, but not utility, while _my go-logger_ package shaved off over a megabyte of executable size by not including multiple abstraction layers and test files.
 
 
 ## usage
