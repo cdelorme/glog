@@ -1,5 +1,5 @@
 
-# go-logger
+# go-log
 
 Yet another logging utility package for golang.
 
