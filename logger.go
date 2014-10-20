@@ -1,13 +1,5 @@
 package log
 
-/**
- * Logger struct
- *  prints to console and returns Record
- *
- * Author: Casey Delow <cdelorme@gmail.com>
- * Date: 2014-8-5
- */
-
 import (
 	"fmt"
 )

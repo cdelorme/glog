@@ -1,12 +1,5 @@
 package log
 
-/**
- * Basic logging /w color support
- *
- * Author: Casey Delow <cdelorme@gmail.com>
- * Date: 2014-8-5
- */
-
 type LogLevel int
 type Color int
 

@@ -1,12 +1,5 @@
 package log
 
-/**
- * LogMessage container for storage and transmission
- *
- * Author: Casey Delow <cdelorme@gmail.com>
- * Date: 2014-8-5
- */
-
 import (
 	"runtime"
 	"time"
