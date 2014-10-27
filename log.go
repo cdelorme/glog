@@ -18,7 +18,8 @@ const (
 )
 
 const (
-	EMERGENCY LogLevel = iota
+	DEFAULT LogLevel = iota
+	EMERGENCY
 	ALERT
 	CRITICAL
 	ERROR

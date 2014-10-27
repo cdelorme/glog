@@ -12,7 +12,7 @@ type Logger struct {
 
 func (logger *Logger) log(record *Record, color Color) {
 
-	if !logger.Silent && record.Level <= logger.Level {
+	if !logger.Silent && (logger.Level == DEFAULT || record.Level <= logger.Level) {
 		parsedMessage := record.Message
 
 		if len(record.Args) > 0 {
