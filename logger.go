@@ -21,14 +21,14 @@ func (logger *Logger) log(record *Record, color Color) {
 			parsedMessage = fmt.Sprintf(record.Message, record.Args...)
 		}
 
+		if !logger.NoColor {
+			parsedMessage = fmt.Sprintf("%s[%dm%s%s", COLORESCAPE, color, parsedMessage, COLORRESET)
+		}
+
 		if logger.Format == "" {
 			parsedMessage = fmt.Sprintf(SYSLOG, record.Date, LevelNames[record.Level], record.File, record.LineNumber, parsedMessage)
 		} else {
 			parsedMessage = fmt.Sprintf(logger.Format, record.Date, LevelNames[record.Level], record.File, record.LineNumber, parsedMessage)
-		}
-
-		if !logger.NoColor {
-			parsedMessage = fmt.Sprintf("%s[%dm%s%s[%dm", ESCAPE, color, parsedMessage, ESCAPE, RESET)
 		}
 
 		fmt.Fprintln(os.Stderr, parsedMessage)
@@ -93,7 +93,7 @@ func (logger *Logger) Info(message string, args ...interface{}) *Record {
 	record := Record{}
 	record.Build(message, 1, INFO, args...)
 
-	logger.log(&record, RESET)
+	logger.log(&record, 0)
 
 	return &record
 }

@@ -3,8 +3,8 @@ package log
 type LogLevel int
 type Color int
 
-const ESCAPE = "\x1b"
-const RESET = 0
+const COLORESCAPE = "\033"
+const COLORRESET = COLORESCAPE + "[0m"
 
 const (
 	BLACK Color = (iota + 30)
