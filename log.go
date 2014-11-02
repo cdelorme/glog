@@ -7,7 +7,7 @@ const ESCAPE = "\x1b"
 const RESET = 0
 
 const (
-	BLACK Color = iota + 30
+	BLACK Color = (iota + 30)
 	RED
 	GREEN
 	YELLOW
@@ -16,6 +16,8 @@ const (
 	CYAN
 	WHITE
 )
+
+const SYSLOG = "%s %s %s:%d, %s"
 
 const (
 	DEFAULT LogLevel = iota

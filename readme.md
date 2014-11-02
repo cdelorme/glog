@@ -49,3 +49,5 @@ The package name is `log`, and you can get a new logger and begin using it with:
 
     logger := log.Logger{Level: "Warning"}
     logger.Warning("message %v", object)
+
+_You may customize the prefix format by setting the `.Format` property of the logger.  However, it will always pass the same arguments [in order](https://github.com/cdelorme/go-log/blob/master/logger.go#L22)._
