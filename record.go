@@ -20,7 +20,6 @@ func (record *Record) Build(message string, skip int, level LogLevel, args ...in
 		file = "???"
 		line = 0
 	}
-
 	record.Message = message
 	record.Date = time.Now().Format(time.Stamp)
 	record.File = file

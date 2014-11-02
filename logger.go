@@ -3,106 +3,84 @@ package log
 import (
 	"fmt"
 	"os"
+	"sync"
 )
 
 type Logger struct {
 	Level   LogLevel
-	Format  string
 	Silent  bool
 	NoColor bool
+	mu      sync.Mutex
 }
 
-func (logger *Logger) log(record *Record, color Color) {
-
-	if !logger.Silent && (logger.Level == DEFAULT || record.Level <= logger.Level) {
+func (logger *Logger) log(record *Record) {
+	logger.mu.Lock()
+	defer logger.mu.Unlock()
+	if !logger.Silent && (record.Level >= logger.Level) {
 		parsedMessage := record.Message
-
 		if len(record.Args) > 0 {
-			parsedMessage = fmt.Sprintf(record.Message, record.Args...)
+			parsedMessage = fmt.Sprintf(parsedMessage, record.Args...)
 		}
-
 		if !logger.NoColor {
-			parsedMessage = fmt.Sprintf("%s[%dm%s%s", COLORESCAPE, color, parsedMessage, COLORRESET)
+			parsedMessage = fmt.Sprintf("%s%s\033[0m", Colors[record.Level], parsedMessage)
 		}
-
-		if logger.Format == "" {
-			parsedMessage = fmt.Sprintf(SYSLOG, record.Date, LevelNames[record.Level], record.File, record.LineNumber, parsedMessage)
-		} else {
-			parsedMessage = fmt.Sprintf(logger.Format, record.Date, LevelNames[record.Level], record.File, record.LineNumber, parsedMessage)
-		}
-
+		parsedMessage = fmt.Sprintf(LogFormat, record.Date, LevelNames[record.Level], record.File, record.LineNumber, parsedMessage)
 		fmt.Fprintln(os.Stderr, parsedMessage)
 	}
 }
 
 func (logger *Logger) Emergency(message string, args ...interface{}) *Record {
 	record := Record{}
-	record.Build(message, 1, EMERGENCY, args...)
-
-	logger.log(&record, RED)
-
+	record.Build(message, 1, Emergency, args...)
+	logger.log(&record)
 	return &record
 }
 
 func (logger *Logger) Alert(message string, args ...interface{}) *Record {
 	record := Record{}
-	record.Build(message, 1, ALERT, args...)
-
-	logger.log(&record, RED)
-
+	record.Build(message, 1, Alert, args...)
+	logger.log(&record)
 	return &record
 }
 
 func (logger *Logger) Critical(message string, args ...interface{}) *Record {
 	record := Record{}
-	record.Build(message, 1, CRITICAL, args...)
-
-	logger.log(&record, MAGENTA)
-
+	record.Build(message, 1, Critical, args...)
+	logger.log(&record)
 	return &record
 }
 
 func (logger *Logger) Error(message string, args ...interface{}) *Record {
 	record := Record{}
-	record.Build(message, 1, ERROR, args...)
-
-	logger.log(&record, MAGENTA)
-
-	return &record
-}
-
-func (logger *Logger) Notice(message string, args ...interface{}) *Record {
-	record := Record{}
-	record.Build(message, 1, NOTICE, args...)
-
-	logger.log(&record, YELLOW)
-
+	record.Build(message, 1, Error, args...)
+	logger.log(&record)
 	return &record
 }
 
 func (logger *Logger) Warning(message string, args ...interface{}) *Record {
 	record := Record{}
-	record.Build(message, 1, WARNING, args...)
+	record.Build(message, 1, Warning, args...)
+	logger.log(&record)
+	return &record
+}
 
-	logger.log(&record, YELLOW)
-
+func (logger *Logger) Notice(message string, args ...interface{}) *Record {
+	record := Record{}
+	record.Build(message, 1, Notice, args...)
+	logger.log(&record)
 	return &record
 }
 
 func (logger *Logger) Info(message string, args ...interface{}) *Record {
 	record := Record{}
-	record.Build(message, 1, INFO, args...)
-
-	logger.log(&record, 0)
-
+	record.Build(message, 1, Info, args...)
+	logger.log(&record)
 	return &record
 }
 
 func (logger *Logger) Debug(message string, args ...interface{}) *Record {
 	record := Record{}
-	record.Build(message, 1, DEBUG, args...)
-
-	logger.log(&record, BLUE)
-
+	record.Build(message, 1, Debug, args...)
+	logger.log(&record)
 	return &record
 }

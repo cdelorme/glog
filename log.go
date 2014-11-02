@@ -1,44 +1,53 @@
 package log
 
-type LogLevel int
-type Color int
-
-const COLORESCAPE = "\033"
-const COLORRESET = COLORESCAPE + "[0m"
-
-const (
-	BLACK Color = (iota + 30)
-	RED
-	GREEN
-	YELLOW
-	BLUE
-	MAGENTA
-	CYAN
-	WHITE
+import (
+	"fmt"
 )
 
-const SYSLOG = "%s %s %s:%d, %s"
+type LogLevel int
+
+const LogFormat = "%s %10s [%s:%d] %s"
 
 const (
-	DEFAULT LogLevel = iota
-	EMERGENCY
-	ALERT
-	CRITICAL
-	ERROR
-	WARNING
-	NOTICE
-	INFO
-	DEBUG
+	Black = (iota + 30)
+	Red
+	Green
+	Yellow
+	Blue
+	Magenta
+	Cyan
+	White
+)
+
+const (
+	Debug LogLevel = iota
+	Info
+	Notice
+	Warning
+	Error
+	Critical
+	Alert
+	Emergency
 )
 
 var LevelNames = []string{
-	"Debug",
-	"Emergency",
-	"Alert",
-	"Critical",
-	"Error",
-	"Notice",
-	"Warning",
-	"Info",
-	"Debug",
+	Debug:     "Debug",
+	Info:      "Info",
+	Notice:    "Warning",
+	Warning:   "Notice",
+	Error:     "Error",
+	Critical:  "Critical",
+	Alert:     "Alert",
+	Emergency: "Emergency",
+}
+
+var Colors = []string{
+	Debug:     fmt.Sprintf("\033[%dm", Cyan),
+	Info:      fmt.Sprintf("\033[%dm", Green),
+	Notice:    fmt.Sprintf("\033[%dm", Blue),
+	Warning:   fmt.Sprintf("\033[%d;1m", Yellow),
+	Error:     fmt.Sprintf("\033[%dm", Red),
+	Critical:  fmt.Sprintf("\033[%d;1m", Red),
+	Alert:     fmt.Sprintf("\033[%dm", Magenta),
+	Emergency: fmt.Sprintf("\033[%d;1m", Magenta),
 }
