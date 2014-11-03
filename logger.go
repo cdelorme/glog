@@ -10,7 +10,7 @@ type Logger struct {
 	Level   LogLevel
 	Silent  bool
 	NoColor bool
-	mu      sync.Mutex
+	mu      sync.RWMutex
 }
 
 func (logger *Logger) log(record *Record) {
