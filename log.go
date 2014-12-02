@@ -2,6 +2,8 @@ package log
 
 import (
 	"fmt"
+	"sync"
+	"os"
 )
 
 type LogLevel int
@@ -50,4 +52,12 @@ var Colors = []string{
 	Critical:  fmt.Sprintf("\033[%d;1m", Red),
 	Alert:     fmt.Sprintf("\033[%dm", Magenta),
 	Emergency: fmt.Sprintf("\033[%d;1m", Magenta),
+}
+
+var mu sync.Mutex
+
+func print(message string) {
+	mu.Lock()
+	defer mu.Unlock()
+	fmt.Fprintln(os.Stderr, message)
 }
