@@ -52,7 +52,7 @@ To import my library:
 
     import "github.com/cdelorme/go-log"
 
-Creating a new logger is this simple (you can supply a `Severity` at your discretion):
+Creating a new logger is this simple (you can supply a `Severity` at your discretion, the default is `Debug`):
 
     logger := log.Logger{Severity: log.Info}
 
@@ -61,10 +61,9 @@ Using the standard log levels as method names, you can send output, and it will 
     logger.Info("message %v", object) // is displayed
     logger.Debug("message %v", object) // is not displayed
 
-You can optionally turn off the colors anytime (including creation):
+_It will still create and return a struct for your application to work with._
+
+You can choose at anytime to disable colored logging, or to silence the output:
 
     logger.NoColor = true
-
-You can also choose to completely silence the logger:
-
     logger.Silent = true
