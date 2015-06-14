@@ -10,11 +10,11 @@ type Record struct {
 	Date       string
 	File       string
 	LineNumber int
-	Level      Severity
+	Severity   Severity
 	Args       []interface{}
 }
 
-func (record *Record) Build(message string, skip int, level Severity, args ...interface{}) {
+func (record *Record) Build(message string, skip int, severity Severity, args ...interface{}) {
 	_, file, line, ok := runtime.Caller(skip + 1)
 	if !ok {
 		file = "???"
@@ -24,6 +24,6 @@ func (record *Record) Build(message string, skip int, level Severity, args ...in
 	record.Date = time.Now().Format(time.Stamp)
 	record.File = file
 	record.LineNumber = line
-	record.Level = level
+	record.Severity = severity
 	record.Args = args
 }

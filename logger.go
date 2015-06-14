@@ -5,21 +5,22 @@ import (
 )
 
 type Logger struct {
-	Level   Severity
-	Silent  bool
-	NoColor bool
+	Severity Severity
+	Silent   bool
+	NoColor  bool
+	Syslog   bool
 }
 
 func (logger *Logger) log(record *Record) {
-	if !logger.Silent && (record.Level >= logger.Level) {
+	if !logger.Silent && (record.Severity >= logger.Severity) {
 		parsedMessage := record.Message
 		if len(record.Args) > 0 {
 			parsedMessage = fmt.Sprintf(parsedMessage, record.Args...)
 		}
 		if !logger.NoColor {
-			parsedMessage = fmt.Sprintf("%s%s\033[0m", Colors[record.Level], parsedMessage)
+			parsedMessage = fmt.Sprintf("%s%s\033[0m", Colors[record.Severity], parsedMessage)
 		}
-		parsedMessage = fmt.Sprintf(LogFormat, record.Date, LevelNames[record.Level], record.File, record.LineNumber, parsedMessage)
+		parsedMessage = fmt.Sprintf(LogFormat, record.Date, Severities[record.Severity], record.File, record.LineNumber, parsedMessage)
 		print(parsedMessage)
 	}
 }

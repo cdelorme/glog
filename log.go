@@ -32,7 +32,7 @@ const (
 	Emergency
 )
 
-var LevelNames = []string{
+var Severities = []string{
 	Debug:     "Debug",
 	Info:      "Info",
 	Notice:    "Warning",
