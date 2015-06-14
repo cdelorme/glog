@@ -18,3 +18,5 @@ func useColor() bool {
 	r, _, e := syscall.Syscall(procGetConsoleMode.Addr(), 2, uintptr(os.Stderr.Fd()), uintptr(unsafe.Pointer(&st)), 0)
 	return r != 0 && e == 0
 }
+
+var colors = useColor()

@@ -17,7 +17,7 @@ func (logger *Logger) log(record *Record) {
 		if len(record.Args) > 0 {
 			parsedMessage = fmt.Sprintf(parsedMessage, record.Args...)
 		}
-		if !logger.NoColor && useColor() {
+		if !logger.NoColor && colors {
 			parsedMessage = fmt.Sprintf("%s%s\033[0m", Colors[record.Severity], parsedMessage)
 		}
 		parsedMessage = fmt.Sprintf(LogFormat, record.Date, Severities[record.Severity], record.File, record.LineNumber, parsedMessage)
