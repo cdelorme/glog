@@ -2,11 +2,11 @@ package log
 
 import (
 	"fmt"
-	"sync"
 	"os"
+	"sync"
 )
 
-type LogLevel int
+type Severity int
 
 const LogFormat = "%s %10s [%s:%d] %s"
 
@@ -22,7 +22,7 @@ const (
 )
 
 const (
-	Debug LogLevel = iota
+	Debug Severity = iota
 	Info
 	Notice
 	Warning

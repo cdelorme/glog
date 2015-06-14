@@ -8,7 +8,7 @@ Yet another logging utility package for golang.
 
 There are two decent options that I looked at before I decided to write my own.
 
-Golang's [log](http://golang.org/pkg/log/) package is well documented and full featured.  However it does not include [standard log levels](http://en.wikipedia.org/wiki/Syslog#Internet_standards) is non-standard and does not include the normal LogLevel message types.  It also executes exit code on your behalf when printing error or panic messages.
+Golang's [log](http://golang.org/pkg/log/) package is well documented and full featured.  However it does not include [standard log levels](http://en.wikipedia.org/wiki/Syslog#Internet_standards) is non-standard and does not include the normal Severity message types.  It also executes exit code on your behalf when printing error or panic messages.
 
 The third party [go-logging](https://github.com/op/go-logging) library is an excellent feature-filled library with standard log level support.  However, like the go package, they chose to exit the program for you on error and above.  It also contains a rather sizable amount of code for something that should be handling logging.
 
@@ -21,7 +21,7 @@ To summarize:
 
 - supports standard log levels
 - all output goes to Stderr
-- has only three properties; `LogLevel`, `Silent`, and `NoColor`
+- has only three properties; `Severity`, `Silent`, and `NoColor`
 - returns a struct for further actions or wrappers
 - is concurrently safe
 - is under 200 lines of code

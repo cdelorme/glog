@@ -5,7 +5,7 @@ import (
 )
 
 type Logger struct {
-	Level   LogLevel
+	Level   Severity
 	Silent  bool
 	NoColor bool
 }
