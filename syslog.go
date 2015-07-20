@@ -31,11 +31,10 @@ func (self *syslog) init() {
 	} else {
 		self.tag = tag
 	}
-	hostname, _ := os.Hostname()
-	if hostname == "" {
-		hostname = "localhost"
+	self.host, _ = os.Hostname()
+	if self.host == "" {
+		self.host = "localhost"
 	}
-	self.host = hostname
 	self.connect()
 }
 
@@ -56,13 +55,13 @@ func (self *syslog) Print(severity Severity, message string) {
 
 func (self *syslog) write(severity int, message string) error {
 	_, err := fmt.Fprintf(self.conn,
-		SyslogFormat,
-		severity,
-		time.Now().Format(time.Stamp),
-		self.host,
-		self.tag,
-		os.Getpid(),
-		message)
+		SyslogFormat,                  // <PRI>TIMESTAMP HOSTNAME TAG[PID]: MSG
+		severity,                      // PRI
+		time.Now().Format(time.Stamp), // TIMESTAMP
+		self.host,                     // HOSTNAME
+		self.tag,                      // TAG
+		os.Getpid(),                   // PID
+		message)                       // MSG
 	return err
 }
 
