@@ -59,8 +59,8 @@ func (self *syslog) write(severity int, message string) error {
 		SyslogFormat,
 		severity,
 		time.Now().Format(time.Stamp),
-		self.tag,
 		self.host,
+		self.tag,
 		os.Getpid(),
 		message)
 	return err
