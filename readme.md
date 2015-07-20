@@ -27,21 +27,19 @@ To summarize, here is what you get:
 
 - follows log standards
 - provides stderr output
-- optional syslog output
-- line numbers for tracking
-- returned struct for further application use
-- optional color printing
-- thread safe
-- basic golang-friendly instantiation
-- under 250 lines of code
+- optional syslog output, with stderr fallback if syslog is unsupported
+- line numbers for debugging
+- optional intelligent color printing, disabled when redirected to file
+- thread safe execution
+- golang-friendly direct struct instantiation
+- under 350 lines of code
 
 Here is what you don't:
 
-- application decisions made on your behalf
-- rich features
-- wild abstractions
+- won't automatically quit your application
 - interfaces
 - unit tests
+- the necessary abstractions to make it testable
 
 Given the size of the project, it's something the average developer should be able to grasp at a glance, which makes it a breeze to understand and a pleasure to use.
 
@@ -63,7 +61,18 @@ Using the standard log levels as method names, you can send output, and it will 
 
 _It will still create and return a struct for your application to work with._
 
-You can choose at anytime to disable colored logging, or to silence the output:
+You can silence the logger by setting Silent to true:
 
-    logger.NoColor = true
-    logger.Silent = true
+	logger.Silent = true
+
+The logger now has intelligent support for color output and syslog.  To enable either, simply call the related methods:
+
+	logger.Color()
+	logger.Syslog()
+
+_If either feature fails or is unsupported the default behavior will still be provided._
+
+
+# reference
+
+- [syslog spec rfc 5424](https://tools.ietf.org/html/rfc5424)
