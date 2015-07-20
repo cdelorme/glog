@@ -32,7 +32,7 @@ To summarize, here is what you get:
 - optional intelligent color printing, disabled when redirected to file
 - thread safe execution
 - golang-friendly direct struct instantiation
-- under 350 lines of code
+- under 300 lines of code
 
 Here is what you don't:
 
