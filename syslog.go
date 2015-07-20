@@ -11,13 +11,12 @@ import (
 	"time"
 )
 
-const SyslogFormat = "<%d>%s %s %s[%d]: %s" // <PRI>TIMESTAMP HOSTNAME TAG[PID]: MSG
+const SyslogFormat = "<%d>%s %s[%d]: %s" // <PRI>TIMESTAMP TAG[PID]: MSG
 const severityMask = 0x07
 const facilityMask = 0xf8
 
 type syslog struct {
-	tag  string
-	host string
+	tag string
 
 	conn net.Conn
 	mu   sync.Mutex
@@ -30,10 +29,6 @@ func (self *syslog) init() {
 		self.tag = os.Args[0]
 	} else {
 		self.tag = tag
-	}
-	self.host, _ = os.Hostname()
-	if self.host == "" {
-		self.host = "localhost"
 	}
 	self.connect()
 }
@@ -55,10 +50,9 @@ func (self *syslog) Print(severity Severity, message string) {
 
 func (self *syslog) write(severity int, message string) error {
 	_, err := fmt.Fprintf(self.conn,
-		SyslogFormat,                  // <PRI>TIMESTAMP HOSTNAME TAG[PID]: MSG
+		SyslogFormat,                  // <PRI>TIMESTAMP TAG[PID]: MSG
 		severity,                      // PRI
 		time.Now().Format(time.Stamp), // TIMESTAMP
-		self.host,                     // HOSTNAME
 		self.tag,                      // TAG
 		os.Getpid(),                   // PID
 		message)                       // MSG
