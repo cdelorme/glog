@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-const SyslogFormat = "<%d>%s %s[%d]: %s" // <PRI>TIMESTAMP HOSTNAME TAG[PID]: MSG
+const SyslogFormat = "<%d>%s %s %s[%d]: %s" // <PRI>TIMESTAMP HOSTNAME TAG[PID]: MSG
 const severityMask = 0x07
 const facilityMask = 0xf8
 
