@@ -1,4 +1,4 @@
-// +build !solaris,!linux,!darwin,!dragonfly,!freebsd,!windows
+// +build !solaris,!linux,!darwin,!dragonfly,!freebsd
 
 package log
 

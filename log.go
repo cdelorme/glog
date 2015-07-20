@@ -62,5 +62,5 @@ var mu sync.Mutex
 func print(message string) {
 	mu.Lock()
 	defer mu.Unlock()
-	fmt.Fprintln(os.Stderr, message)
+	fmt.Fprintf(os.Stderr, message)
 }
