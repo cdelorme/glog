@@ -7,7 +7,6 @@ import (
 	"net"
 	"os"
 	"path/filepath"
-	"sync"
 	"time"
 )
 
@@ -16,15 +15,13 @@ const severityMask = 0x07
 const facilityMask = 0xf8
 
 type syslog struct {
-	tag string
-
 	conn net.Conn
-	mu   sync.Mutex
+	tag  string
 }
 
 func (self *syslog) init() {
-	self.mu.Lock()
-	defer self.mu.Unlock()
+	mu.Lock()
+	defer mu.Unlock()
 	if tag, err := filepath.Abs(os.Args[0]); err != nil {
 		self.tag = os.Args[0]
 	} else {
@@ -34,11 +31,10 @@ func (self *syslog) init() {
 }
 
 func (self *syslog) Print(severity Severity, message string) {
-	// @todo(casey): verify conversion to integer value for calculation below
 	s := ((7 - int(severity)) & facilityMask) | ((7 - int(severity)) & severityMask)
 
-	self.mu.Lock()
-	defer self.mu.Unlock()
+	mu.Lock()
+	defer mu.Unlock()
 
 	if err := self.write(s, message); err == nil {
 		return
