@@ -2,81 +2,96 @@ package log
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
+	"runtime"
+	"time"
 )
+
+type syslogger interface {
+	Print(severity Severity, message string)
+}
 
 type Logger struct {
 	Severity Severity
 	Silent   bool
-	NoColor  bool
-	Syslog   bool
+	color    bool
+	syslog   syslogger
 }
 
-func (logger *Logger) log(record *Record) {
-	if !logger.Silent && (record.Severity >= logger.Severity) {
-		parsedMessage := record.Message
-		if len(record.Args) > 0 {
-			parsedMessage = fmt.Sprintf(parsedMessage, record.Args...)
-		}
-		if !logger.NoColor && colors {
-			parsedMessage = fmt.Sprintf("%s%s\033[0m", Colors[record.Severity], parsedMessage)
-		}
-		parsedMessage = fmt.Sprintf(LogFormat, record.Date, Severities[record.Severity], record.File, record.LineNumber, parsedMessage)
-		print(parsedMessage)
+func (self *Logger) log(message string, severity Severity, args ...interface{}) {
+	if self.Silent || severity < self.Severity {
+		return
+	}
+
+	m := message
+	if len(args) > 0 {
+		m = fmt.Sprintf(m, args...)
+	}
+	if self.color && self.syslog == nil {
+		m = fmt.Sprintf("%s%s\033[0m", Colors[severity], m)
+	}
+
+	app := os.Args[0]
+	if t, err := filepath.Abs(os.Args[0]); err == nil {
+		app = t
+	}
+
+	_, file, line, _ := runtime.Caller(2)
+	m = fmt.Sprintf(ShortFormat, file, line, m)
+
+	if self.syslog == nil {
+		print(fmt.Sprintf(LongFormat, time.Now().Format(time.Stamp), app, Severities[severity], m))
+	} else {
+		self.syslog.Print(severity, m)
 	}
 }
 
-func (logger *Logger) Emergency(message string, args ...interface{}) *Record {
-	record := Record{}
-	record.Build(message, 1, Emergency, args...)
-	logger.log(&record)
-	return &record
+func (self *Logger) Log(message string, severity Severity, args ...interface{}) {
+	self.log(message, severity, args...)
 }
 
-func (logger *Logger) Alert(message string, args ...interface{}) *Record {
-	record := Record{}
-	record.Build(message, 1, Alert, args...)
-	logger.log(&record)
-	return &record
+func (self *Logger) Emergency(message string, args ...interface{}) {
+	self.log(message, Emergency, args...)
 }
 
-func (logger *Logger) Critical(message string, args ...interface{}) *Record {
-	record := Record{}
-	record.Build(message, 1, Critical, args...)
-	logger.log(&record)
-	return &record
+func (self *Logger) Alert(message string, args ...interface{}) {
+	self.log(message, Alert, args...)
 }
 
-func (logger *Logger) Error(message string, args ...interface{}) *Record {
-	record := Record{}
-	record.Build(message, 1, Error, args...)
-	logger.log(&record)
-	return &record
+func (self *Logger) Critical(message string, args ...interface{}) {
+	self.log(message, Critical, args...)
 }
 
-func (logger *Logger) Warning(message string, args ...interface{}) *Record {
-	record := Record{}
-	record.Build(message, 1, Warning, args...)
-	logger.log(&record)
-	return &record
+func (self *Logger) Error(message string, args ...interface{}) {
+	self.log(message, Error, args...)
 }
 
-func (logger *Logger) Notice(message string, args ...interface{}) *Record {
-	record := Record{}
-	record.Build(message, 1, Notice, args...)
-	logger.log(&record)
-	return &record
+func (self *Logger) Warning(message string, args ...interface{}) {
+	self.log(message, Warning, args...)
 }
 
-func (logger *Logger) Info(message string, args ...interface{}) *Record {
-	record := Record{}
-	record.Build(message, 1, Info, args...)
-	logger.log(&record)
-	return &record
+func (self *Logger) Notice(message string, args ...interface{}) {
+	self.log(message, Notice, args...)
 }
 
-func (logger *Logger) Debug(message string, args ...interface{}) *Record {
-	record := Record{}
-	record.Build(message, 1, Debug, args...)
-	logger.log(&record)
-	return &record
+func (self *Logger) Info(message string, args ...interface{}) {
+	self.log(message, Info, args...)
+}
+
+func (self *Logger) Debug(message string, args ...interface{}) {
+	self.log(message, Debug, args...)
+}
+
+func (self *Logger) Color() bool {
+	self.color = useColor()
+	return self.color
+}
+
+func (self *Logger) Syslog() bool {
+	self.syslog = useSyslog()
+	if self.syslog != nil {
+		self.color = false
+	}
+	return self.syslog != nil
 }

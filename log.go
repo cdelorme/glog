@@ -6,20 +6,12 @@ import (
 	"sync"
 )
 
-type Severity int
-
-const LogFormat = "%s %10s [%s:%d] %s"
-
 const (
-	Black = (iota + 30)
-	Red
-	Green
-	Yellow
-	Blue
-	Magenta
-	Cyan
-	White
+	ShortFormat = "[%s:%d]: %s\n" // [file:line]: message
+	LongFormat  = "%s %10s %s %s" // timestamp severity application ShortFormat
 )
+
+type Severity int
 
 const (
 	Debug Severity = iota
@@ -30,6 +22,17 @@ const (
 	Critical
 	Alert
 	Emergency
+)
+
+const (
+	Black = (iota + 30)
+	Red
+	Green
+	Yellow
+	Blue
+	Magenta
+	Cyan
+	White
 )
 
 var Severities = []string{
