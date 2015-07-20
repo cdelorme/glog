@@ -1,4 +1,4 @@
-// +build windows,nacl,plan9
+// +build !solaris,!linux,!darwin,!dragonfly,!freebsd,!netbsd,!openbsd
 
 package log
 
