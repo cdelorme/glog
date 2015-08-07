@@ -38,7 +38,7 @@ func (self *Logger) log(message string, severity Severity, args ...interface{}) 
 	}
 
 	_, file, line, _ := runtime.Caller(2)
-	m = fmt.Sprintf(ShortFormat, file, line, m)
+	m = fmt.Sprintf(ShortFormat, filepath.Base(file), line, m)
 
 	if self.syslog == nil {
 		print(fmt.Sprintf(LongFormat, time.Now().Format(time.Stamp), app, Severities[severity], m))
