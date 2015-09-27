@@ -8,6 +8,15 @@ import (
 	"time"
 )
 
+var app string
+
+func init() {
+	app = os.Args[0]
+	if t, err := filepath.Abs(os.Args[0]); err == nil {
+		app = t
+	}
+}
+
 type syslogger interface {
 	Print(severity Severity, message string)
 }
@@ -30,11 +39,6 @@ func (self *Logger) log(message string, severity Severity, args ...interface{}) 
 	}
 	if self.color && self.syslog == nil {
 		m = fmt.Sprintf("%s%s\033[0m", Colors[severity], m)
-	}
-
-	app := os.Args[0]
-	if t, err := filepath.Abs(os.Args[0]); err == nil {
-		app = t
 	}
 
 	_, file, line, _ := runtime.Caller(2)
