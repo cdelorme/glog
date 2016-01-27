@@ -38,8 +38,8 @@ const (
 var Severities = []string{
 	Debug:     "Debug",
 	Info:      "Info",
-	Notice:    "Warning",
-	Warning:   "Notice",
+	Notice:    "Notice",
+	Warning:   "Warning",
 	Error:     "Error",
 	Critical:  "Critical",
 	Alert:     "Alert",
