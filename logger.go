@@ -37,9 +37,11 @@ func (self *Logger) log(message string, severity Severity, args ...interface{}) 
 	if len(args) > 0 {
 		m = fmt.Sprintf(m, args...)
 	}
+	mu.Lock()
 	if self.color && self.syslog == nil {
 		m = fmt.Sprintf("%s%s\033[0m", Colors[severity], m)
 	}
+	mu.Unlock()
 
 	_, file, line, _ := runtime.Caller(2)
 	m = fmt.Sprintf(ShortFormat, filepath.Base(file), line, m)
@@ -88,12 +90,16 @@ func (self *Logger) Debug(message string, args ...interface{}) {
 }
 
 func (self *Logger) Color() bool {
+	mu.Lock()
+	defer mu.Unlock()
 	self.color = useColor()
 	return self.color
 }
 
 func (self *Logger) Syslog() bool {
 	self.syslog = useSyslog()
+	mu.Lock()
+	defer mu.Unlock()
 	if self.syslog != nil {
 		self.color = false
 	}
