@@ -2,55 +2,32 @@ package log
 
 import (
 	"fmt"
-	"os"
-	"path/filepath"
+	"path"
 	"runtime"
 	"time"
 )
 
-var app string
+type Logger struct{}
 
-func init() {
-	app = os.Args[0]
-	if t, err := filepath.Abs(os.Args[0]); err == nil {
-		app = t
-	}
-}
-
-type syslogger interface {
-	Print(severity Severity, message string)
-}
-
-type Logger struct {
-	Severity Severity
-	Silent   bool
-	color    bool
-	syslog   syslogger
-}
-
-func (self *Logger) log(message string, severity Severity, args ...interface{}) {
-	if self.Silent || severity < self.Severity {
+func (self *Logger) log(msg string, s Severity, args ...interface{}) {
+	if s < severity {
 		return
 	}
 
-	m := message
+	m := msg
 	if len(args) > 0 {
 		m = fmt.Sprintf(m, args...)
 	}
-	mu.Lock()
-	if self.color && self.syslog == nil {
-		m = fmt.Sprintf("%s%s\033[0m", Colors[severity], m)
-	}
-	mu.Unlock()
 
-	_, file, line, _ := runtime.Caller(2)
-	m = fmt.Sprintf(ShortFormat, filepath.Base(file), line, m)
+	_, f, l, _ := runtime.Caller(2)
 
-	if self.syslog == nil {
-		print(fmt.Sprintf(LongFormat, time.Now().Format(time.Stamp), app, Severities[severity], m))
+	if color {
+		m = fmt.Sprintf(colors[s]+format, time.Now().Format(time.Stamp), severities[s], name, path.Base(f), l, "\033[0m"+m)
 	} else {
-		self.syslog.Print(severity, m)
+		m = fmt.Sprintf(format, time.Now().Format(time.Stamp), severities[s], name, path.Base(f), l, m)
 	}
+
+	print(m)
 }
 
 func (self *Logger) Log(message string, severity Severity, args ...interface{}) {
@@ -87,21 +64,4 @@ func (self *Logger) Info(message string, args ...interface{}) {
 
 func (self *Logger) Debug(message string, args ...interface{}) {
 	self.log(message, Debug, args...)
-}
-
-func (self *Logger) Color() bool {
-	mu.Lock()
-	defer mu.Unlock()
-	self.color = useColor()
-	return self.color
-}
-
-func (self *Logger) Syslog() bool {
-	self.syslog = useSyslog()
-	mu.Lock()
-	defer mu.Unlock()
-	if self.syslog != nil {
-		self.color = false
-	}
-	return self.syslog != nil
 }

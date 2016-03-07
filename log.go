@@ -1,15 +1,14 @@
 package log
 
 import (
-	"fmt"
+	"io"
 	"os"
+	"path"
+	"strings"
 	"sync"
 )
 
-const (
-	ShortFormat = "[%s:%d]: %s\n" // [file:line]: message
-	LongFormat  = "%s %10s %s %s" // timestamp severity application ShortFormat
-)
+const format = "%s %10s %s [%s:%d]: %s\n" // timestamp severity application [file:line]: message newline
 
 type Severity int
 
@@ -22,20 +21,10 @@ const (
 	Critical
 	Alert
 	Emergency
+	silent
 )
 
-const (
-	Black = (iota + 30)
-	Red
-	Green
-	Yellow
-	Blue
-	Magenta
-	Cyan
-	White
-)
-
-var Severities = []string{
+var severities = []string{
 	Debug:     "Debug",
 	Info:      "Info",
 	Notice:    "Notice",
@@ -44,23 +33,45 @@ var Severities = []string{
 	Critical:  "Critical",
 	Alert:     "Alert",
 	Emergency: "Emergency",
+	silent:    "Silent",
 }
 
-var Colors = []string{
-	Debug:     fmt.Sprintf("\033[%dm", Cyan),
-	Info:      fmt.Sprintf("\033[%dm", Green),
-	Notice:    fmt.Sprintf("\033[%dm", Blue),
-	Warning:   fmt.Sprintf("\033[%d;1m", Yellow),
-	Error:     fmt.Sprintf("\033[%dm", Red),
-	Critical:  fmt.Sprintf("\033[%d;1m", Red),
-	Alert:     fmt.Sprintf("\033[%dm", Magenta),
-	Emergency: fmt.Sprintf("\033[%d;1m", Magenta),
+var colors = []string{
+	Debug:     "\033[36m",   // Cyan
+	Info:      "\033[32m",   // Green
+	Notice:    "\033[34m",   // Bluew
+	Warning:   "\033[33;1m", // Yellow
+	Error:     "\033[31m",   // Red
+	Critical:  "\033[31;1m", // Red Bold
+	Alert:     "\033[35m",   // Magenta
+	Emergency: "\033[35;1m", // Magenta Bold
+	silent:    "",
 }
 
+var name string
+var color bool
+var severity Severity
 var mu sync.Mutex
+var stderr io.Writer = os.Stderr
 
-func print(message string) {
+func init() {
+	name = path.Base(os.Args[0])
+	color = useColor()
+	severity = level()
+}
+
+func level() Severity {
+	l := os.Getenv("LOG_LEVEL")
+	for s, v := range severities {
+		if strings.ToLower(v) == strings.ToLower(l) {
+			return Severity(s)
+		}
+	}
+	return Error
+}
+
+func print(msg string) {
 	mu.Lock()
 	defer mu.Unlock()
-	fmt.Fprintf(os.Stderr, message)
+	stderr.Write([]byte(msg))
 }
