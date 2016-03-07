@@ -1,78 +1,132 @@
 
-# go-log
+# [go-log](https://github.com/cdelorme/go-log)
 
-Yet another logging utility package for golang.
+An idiomatic and simple go logger.
 
 
 ## alternatives
 
-There are many alternatives available, but when I last looked they included:
+Common alternatives include:
 
 - [log](http://golang.org/pkg/log/)
 - [syslog](http://golang.org/pkg/log/syslog)
-- [go-logging](https://github.com/op/go-logging)
+- [github.com/op/go-logging](https://github.com/op/go-logging)
 
-The first is golang's builtin logging utility, but it only features log, error, and panic methods, which does not follow [standard log levels](http://en.wikipedia.org/wiki/Syslog#Internet_standards).
+Neither of the builtin options support [standard log levels](http://en.wikipedia.org/wiki/Syslog#Internet_standards).
 
-The second is their syslog implementation, which mostly follows the standard log levels, and runs through syslog.  It is probably the closest to what I would prefer using given its size and simplicity.  However, I am not a fan of its initialization using a `New()` method, which has a code-smell from a non-golang way of doing things.
+**All three of these solutions override application behavior, forcing `os.Exit()` or `Panic()`.**
 
-The final package is an excellent feature-filled library following log standards.  However, like the go package, they chose to exit the program for you on error and above, and it contains a massive amount of code for something as basic as logging.
+The complexity, network dependency, and enforced `New()` syntax reek of code-smell when it comes to the syslog implementation.
+
+There are over 1000 lines of code in `go-logging`, not counting the tests.
 
 
 ## sales pitch
 
-My library aims to deliver the simplist usable implementation, supporting both traditional `stderr` output, and `syslog` compatible implementation.
+**If you can read my source at-a-glance then my work is done.**
 
-To summarize, here is what you get:
+Easy to read code is also easy to use and implement, and boosts confidence in stability.
 
-- follows log standards
-- provides stderr output
-- optional syslog output, with stderr fallback if syslog is unsupported
-- line numbers for debugging
-- optional intelligent color printing, disabled when redirected to file
-- thread safe execution
-- golang-friendly direct struct instantiation
-- under 300 lines of code
+**This library:**
 
-Here is what you don't:
+- provides standard log levels
+- uses the ever-flexible stderr
+- prints messages in standard syslog format
+- utilizes `sync.Mutex` for thread safe execution
+- includes file name and line numbers for debugging
+- supplies idiomatic go initialization (eg. `l := log.Logger{}`)
+- totals 310 lines of code (_including unit tests **and benchmarks**_)
+- has configurable severity controlled via `LOG_LEVEL` environment variable
+- omits transient dependencies (only a minimal set of standard library packages)
+- detects compatible terminals and automatically applies color to message prefixes
 
-- won't automatically quit your application
-- interfaces
-- unit tests
-- the necessary abstractions to make it testable
+_While this use-case seems like it perfectly fits channels, numerous benchmarks have indicated that a `sync.Mutex` provides superior performance._
 
-Given the size of the project, it's something the average developer should be able to grasp at a glance, which makes it a breeze to understand and a pleasure to use.
+_Eliminating severity configuration from the application developer domain is surprisingly wonderful for application developers and users (nobody likes choosing and coding for `-v`, `-vv`, `-vvv`, `-d`, `-s`, `-q`, `--verbose`, `--debug`, `--silent`, and `--quiet`)._
 
 
 ## usage
 
-To import my library:
+Install it:
+
+	go get github.com/cdelorme/go-log
+
+Import it:
 
     import "github.com/cdelorme/go-log"
 
-Creating a new logger is this simple (you can supply a `Severity` at your discretion, the default is `Debug`):
+Create a new logger instance:
 
-    logger := log.Logger{Severity: log.Info}
+    logger := log.Logger{}
 
-Using the standard log levels as method names, you can send output, and it will only print the message if the log level is at or above the loggers setting:
+_The severity of messages defaults to `Error`, and can be set using `LOG_LEVEL` as an environment variable string matching the supported `severities` (including `silent`)._
 
-    logger.Info("message %v", object) // is displayed
-    logger.Debug("message %v", object) // is not displayed
+Format your own messages with any data types synchronously or with goroutines:
 
-_It will still create and return a struct for your application to work with._
+    logger.Info("message %v", object)
+    go logger.Debug("message %v", object)
 
-You can silence the logger by setting Silent to true:
-
-	logger.Silent = true
-
-The logger now has intelligent support for color output and syslog.  To enable either, simply call the related methods:
-
-	logger.Color()
-	logger.Syslog()
-
-_If either feature fails or is unsupported the default behavior will still be provided._
+_Keep in mind goroutines are cheap **but not free**; if you have bursty traffic such as a web application this may work, but real-time applications with a tight loop may simply accrue memory and cpu debt._
 
 
-# reference
+### examples
+
+Let's say you have some structure like this:
+
+	type Configuration struct {
+		Port     int
+		Address  string
+		Username string
+		Password string
+	}
+
+You may already be familiar with the `MarshalJSON()` override (as well as `json:"-"` comment formatting):
+
+	func (self *Configuration) MarshalJSON() ([]byte, error) {
+		return []byte(`{"port": ` + strconv.Itoa(self.Port) + `, "address": "` + self.Address + `", "username": "` + self.Username + `"}`), nil
+	}
+
+However, did you know the same works with `%s` formatting:
+
+	func (self Configuration) String() string {
+		s, _ := self.MarshalJSON()
+		return string(s)
+	}
+
+Even better, the "golden goose" does exist for `%v` too:
+
+	func (self Configuration) GoString() string {
+		return self.String()
+	}
+
+_Note the lack of pointer-receivers on the `String()` and `GoString()` methods._
+
+**_It seems go exposes complexity to help enforce good application design, so if you find these solutions to be painful it may indicate some flaws to investigate._**
+
+
+## testing
+
+You can run tests via:
+
+	go test -v -race -cover
+
+_All logger output is redirected during tests (and benchmarks) to `/dev/null` using `io.Discard`._
+
+
+## benchmarks
+
+Benchmarks can be run on the project via:
+
+	go test -run=X -bench=.
+
+As of the last commit, the performance results from my system was:
+
+	BenchmarkLogger-4	  300000	      4166 ns/op
+	ok  	github.com/cdelorme/go-log	1.312s
+
+_I run a 12" 2015 Macbook, so it's by no means a powerful CPU._
+
+
+# references
 
 - [syslog spec rfc 5424](https://tools.ietf.org/html/rfc5424)
