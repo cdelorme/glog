@@ -9,7 +9,7 @@ import (
 
 type Logger struct{}
 
-func (self *Logger) log(msg string, s Severity, args ...interface{}) {
+func (self *Logger) Log(s Severity, msg string, args ...interface{}) {
 	if s < severity {
 		return
 	}
@@ -30,38 +30,34 @@ func (self *Logger) log(msg string, s Severity, args ...interface{}) {
 	print(m)
 }
 
-func (self *Logger) Log(message string, severity Severity, args ...interface{}) {
-	self.log(message, severity, args...)
-}
-
 func (self *Logger) Emergency(message string, args ...interface{}) {
-	self.log(message, Emergency, args...)
+	self.Log(Emergency, message, args...)
 }
 
 func (self *Logger) Alert(message string, args ...interface{}) {
-	self.log(message, Alert, args...)
+	self.Log(Alert, message, args...)
 }
 
 func (self *Logger) Critical(message string, args ...interface{}) {
-	self.log(message, Critical, args...)
+	self.Log(Critical, message, args...)
 }
 
 func (self *Logger) Error(message string, args ...interface{}) {
-	self.log(message, Error, args...)
+	self.Log(Error, message, args...)
 }
 
 func (self *Logger) Warning(message string, args ...interface{}) {
-	self.log(message, Warning, args...)
+	self.Log(Warning, message, args...)
 }
 
 func (self *Logger) Notice(message string, args ...interface{}) {
-	self.log(message, Notice, args...)
+	self.Log(Notice, message, args...)
 }
 
 func (self *Logger) Info(message string, args ...interface{}) {
-	self.log(message, Info, args...)
+	self.Log(Info, message, args...)
 }
 
 func (self *Logger) Debug(message string, args ...interface{}) {
-	self.log(message, Debug, args...)
+	self.Log(Debug, message, args...)
 }

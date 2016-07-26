@@ -18,7 +18,7 @@ func TestLogger(t *testing.T) {
 			for a := 0; a < len(args); a++ {
 				color = c
 				severity = Severity(s)
-				l.Log("message", Severity(s), args[a:]...)
+				l.Log(severity, "message", args[a:]...)
 				l.Emergency("message", args[a:]...)
 				l.Alert("message", args[a:]...)
 				l.Critical("message", args[a:]...)
@@ -37,6 +37,6 @@ func BenchmarkLogger(b *testing.B) {
 	args := []interface{}{"one", struct{ Two int }{Two: 2}, 3}
 
 	for n := 0; n < b.N; n++ {
-		l.Log("message", Error, args)
+		l.Log(Error, "message", args)
 	}
 }
