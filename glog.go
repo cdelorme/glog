@@ -3,9 +3,7 @@
 // dealing with concurrency, properly using stderr, not closing your
 // application on your behalf, and printing in color automatically
 // when the terminal supports it.
-
-package glog
-
+//
 // Examples
 //
 // To use the logger you may initialize a new instance:
@@ -19,6 +17,7 @@ package glog
 //
 // In both cases to print the debug messages simply set:
 //	LOG_LEVEL=debug
+package glog
 
 import (
 	"io"
@@ -31,6 +30,8 @@ import (
 // timestamp severity application [file:line]: message newline
 const format = "%s %10s %s [%s:%d]: %s\n"
 
+// severity (based on RFC-5424) of the message being written
+// used when you need to
 type Severity int
 
 const (
