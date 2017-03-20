@@ -1,12 +1,12 @@
 
-# [go-log](https://github.com/cdelorme/go-log)
+# [glog](https://github.com/cdelorme/glog)
 
 An idiomatic and simple go logger.
 
 
 ## alternatives
 
-Common alternatives include:
+Some alternative packages:
 
 - [log](http://golang.org/pkg/log/)
 - [syslog](http://golang.org/pkg/log/syslog)
@@ -16,9 +16,9 @@ Neither of the builtin options support [standard log levels](http://en.wikipedia
 
 **All three of these solutions override application behavior, forcing `os.Exit()` or `Panic()`.**
 
-The complexity, network dependency, and enforced `New()` syntax reek of code-smell when it comes to the syslog implementation.
+The complexity surrounding embedding syslog into the logger, which creates a network dependency and forces `New()` syntax, are a pungent code smell that does not easily cross platforms.
 
-There are over 1000 lines of code in `go-logging`, not counting the tests.
+_There are over 1000 lines of code in [`go-logging`](https://github.com/op/go-logging), not counting the tests._
 
 
 ## sales pitch
@@ -35,29 +35,29 @@ Easy to read code is also easy to use and implement, and boosts confidence in st
 - utilizes `sync.Mutex` for thread safe execution
 - includes file name and line numbers for debugging
 - supplies idiomatic go initialization (eg. `l := log.Logger{}`)
-- totals 310 lines of code (_including unit tests **and benchmarks**_)
 - has configurable severity controlled via `LOG_LEVEL` environment variable
 - omits transient dependencies (only a minimal set of standard library packages)
+- totals 345 lines of code (_including comments, unit tests, **and benchmarks**_)
 - detects compatible terminals and automatically applies color to message prefixes
 
-_While this use-case seems like it perfectly fits channels, numerous benchmarks have indicated that a `sync.Mutex` provides superior performance._
+_While this use-case seems like a perfect fit for channels, numerous benchmarks have indicated that a `sync.Mutex` provides superior performance._
 
-_Eliminating severity configuration from the application developer domain is surprisingly wonderful for application developers and users (nobody likes choosing and coding for `-v`, `-vv`, `-vvv`, `-d`, `-s`, `-q`, `--verbose`, `--debug`, `--silent`, and `--quiet`)._
+_Eliminating severity configuration from the application developer domain is surprisingly wonderful for everybody (eg. no longer worry about `-v`, `-vv`, `-vvv`, `-d`, `-s`, `-q`, `--verbose`, `--debug`, `--silent`, or `--quiet`)._
 
 
 ## usage
 
 Install it:
 
-	go get github.com/cdelorme/go-log
+	go get github.com/cdelorme/glog
 
 Import it:
 
-    import "github.com/cdelorme/go-log"
+    import "github.com/cdelorme/glog"
 
 Create a new logger instance:
 
-    logger := log.Logger{}
+    logger := glog.Logger{}
 
 _The severity of messages defaults to `Error`, and can be set using `LOG_LEVEL` as an environment variable string matching the supported `severities` (including `silent`)._
 
@@ -119,14 +119,13 @@ Benchmarks can be run on the project via:
 
 	go test -run=X -bench=.
 
-As of the last commit, the performance results from my system was:
+While biased by system, here are the results of the last run:
 
-	BenchmarkLogger-4	  300000	      4166 ns/op
-	ok  	github.com/cdelorme/go-log	1.312s
-
-_I run a 12" 2015 Macbook, so it's by no means a powerful CPU._
+	BenchmarkLogger-8   	 1000000	      2292 ns/op
+	ok  	github.com/cdelorme/glog	2.319s
 
 
 # references
 
 - [syslog spec rfc 5424](https://tools.ietf.org/html/rfc5424)
+- [godoc tricks](https://godoc.org/github.com/fluhus/godoc-tricks)

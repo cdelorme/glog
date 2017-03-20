@@ -1,6 +1,6 @@
 // +build !windows,!plan9,!netbsd,!openbsd
 
-package log
+package glog
 
 import (
 	"testing"

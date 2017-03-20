@@ -1,4 +1,4 @@
-package log
+package glog
 
 import (
 	"fmt"
@@ -7,8 +7,15 @@ import (
 	"time"
 )
 
+// package-global Logger instance for logging directly
+var L Logger
+
+// a logger that combines fmt parameters with RFC-5424 compatible log levels
+// and writes to stderr in a concurrently safe way, while pushing severity
+// controls into the hands of the user so the application remains simple
 type Logger struct{}
 
+// a direct call to log a message, where you supply the severity directly
 func (self *Logger) Log(s Severity, msg string, args ...interface{}) {
 	if s < severity {
 		return
@@ -30,34 +37,45 @@ func (self *Logger) Log(s Severity, msg string, args ...interface{}) {
 	print(m)
 }
 
-func (self *Logger) Emergency(message string, args ...interface{}) {
-	self.Log(Emergency, message, args...)
+// emergency is not adviced for use by applications
+func (self *Logger) Emergency(msg string, args ...interface{}) {
+	self.Log(Emergency, msg, args...)
 }
 
-func (self *Logger) Alert(message string, args ...interface{}) {
-	self.Log(Alert, message, args...)
+// alert should probably be used to invoke notifications (eg. via email or SMS)
+func (self *Logger) Alert(msg string, args ...interface{}) {
+	self.Log(Alert, msg, args...)
 }
 
-func (self *Logger) Critical(message string, args ...interface{}) {
-	self.Log(Critical, message, args...)
+// critical generally means something outside the application caused a failure
+// and is best matched with panic catching events
+func (self *Logger) Critical(msg string, args ...interface{}) {
+	self.Log(Critical, msg, args...)
 }
 
-func (self *Logger) Error(message string, args ...interface{}) {
-	self.Log(Error, message, args...)
+// errors are generally known quantities within the application that you have
+// planned for, but may wish to record the occurrence
+func (self *Logger) Error(msg string, args ...interface{}) {
+	self.Log(Error, msg, args...)
 }
 
-func (self *Logger) Warning(message string, args ...interface{}) {
-	self.Log(Warning, message, args...)
+// warning is generally used when something non-essential fails or when
+// your application anticipates future problems ahead
+func (self *Logger) Warning(msg string, args ...interface{}) {
+	self.Log(Warning, msg, args...)
 }
 
-func (self *Logger) Notice(message string, args ...interface{}) {
-	self.Log(Notice, message, args...)
+// notice may be used to share unusual events that do not disrupt execution
+func (self *Logger) Notice(msg string, args ...interface{}) {
+	self.Log(Notice, msg, args...)
 }
 
-func (self *Logger) Info(message string, args ...interface{}) {
-	self.Log(Info, message, args...)
+// info is generally helpful output regarding and to identify normal operation
+func (self *Logger) Info(msg string, args ...interface{}) {
+	self.Log(Info, msg, args...)
 }
 
-func (self *Logger) Debug(message string, args ...interface{}) {
-	self.Log(Debug, message, args...)
+// debug is development output that is only meant for debugging the application
+func (self *Logger) Debug(msg string, args ...interface{}) {
+	self.Log(Debug, msg, args...)
 }

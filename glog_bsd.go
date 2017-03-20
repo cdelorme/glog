@@ -1,6 +1,6 @@
 // +build darwin dragonfly freebsd netbsd openbsd
 
-package log
+package glog
 
 import "syscall"
 

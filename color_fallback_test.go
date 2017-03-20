@@ -1,6 +1,6 @@
 // +build !solaris,!linux,!darwin,!dragonfly,!freebsd
 
-package log
+package glog
 
 import (
 	"testing"
