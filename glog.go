@@ -15,7 +15,7 @@
 //	glog.L.Debug("this message requires debug log level")
 //	glog.L.Error("this message will be printed with the default log level: %v\n", logger)
 //
-// In both cases to print the debug messages simply set:
+// In both cases to print all messages up to debug severity simply set:
 //	LOG_LEVEL=debug
 package glog
 
