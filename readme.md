@@ -34,7 +34,7 @@ Easy to read code is also easy to use and implement, and boosts confidence in st
 - prints messages in standard syslog format
 - utilizes `sync.Mutex` for thread safe execution
 - includes file name and line numbers for debugging
-- supplies idiomatic go initialization (eg. `l := log.Logger{}`)
+- supplies idiomatic go initialization (eg. `l := glog.Logger{}`)
 - has configurable severity controlled via `LOG_LEVEL` environment variable
 - omits transient dependencies (only a minimal set of standard library packages)
 - totals 345 lines of code (_including comments, unit tests, **and benchmarks**_)
